@@ -39,7 +39,7 @@ function singleOperation(splitExpression, charParameter, operation){
 }
 
 //take a set of operations without brackets
-//everytime you do an operation, restart function
+//everytime you do an operation, restart function until single number is left
 function performOperation(splitExpression){
     //check first for power, highest precedence
     if (splitExpression.indexOf("^") !== -1){
