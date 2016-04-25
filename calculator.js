@@ -1,29 +1,18 @@
-var calculate = require("./library/calculate")
-
-//take an array, get rid of empty strings
-function getRidOfWhiteSpace(arrayWithoutSpaces, currentValue) {
-    {
-        if (currentValue) {
-            arrayWithoutSpaces.push(currentValue);
-        }
-        return arrayWithoutSpaces;
-    }
-}
+var calculate = require("./library/calculate");
+var transform = require("./library/transform")
 
 function calculator(someString) {
     
-    //take a string, replaces spaces with empty string, split into array of numbers and characters
-    var stringArrWithSpaces = (someString.replace(/\s/g, "").split(/([\+\-\*\/\^\(\)])/));
-    //remove empty strings ie spaces
-    var stringArr = stringArrWithSpaces.reduce(getRidOfWhiteSpace, []);
+    var stringArr = transform.toNumStringArray(someString);
+
     //locate first open bracket in array
     var openBracket = stringArr.indexOf('(');
     while (openBracket < stringArr.length) {
         //if there is no open bracket ie only one mathematical expression
         if (openBracket === -1) {
             //do the math
-            calculate.performOperation(stringArr);
-            return (stringArr);
+            stringArr = calculate.performOperation(stringArr);
+            return (stringArr[0]);
         }
         else {
             //locate the next opening and closing brackets
@@ -37,7 +26,9 @@ function calculator(someString) {
                 //replace this bracket in the array with the total
                 stringArr.splice(openBracket, (nextClose - openBracket + 1), convertedBracket[0]);
                 //restart searching from the first opening bracket
-                openBracket = stringArr.indexOf('(')
+                openBracket = stringArr.indexOf('(');
+                stringArr = stringArr.join("");
+                stringArr = transform.toNumStringArray(stringArr);
             }
             else {
                 //if not an inner bracket, go to next open parenthesis and restart 
@@ -45,19 +36,17 @@ function calculator(someString) {
             }
         }
     }
-    return stringArr[0];
 }
 
-//console.log(calculator("2*( 5* (10/3  * (2*33+7*9)+7*9) /  4 + (5+6))")); //1254.5
-//console.log(2 * (5 * (10 / 3 * (2 * 33 + 7 * 9) + 7 * 9) / 4 + (5 + 6))); //1254.5
+//console.log(calculator("(-2.2*-( 5 (10.7 * 3 (2*33+7*9)+7*9) /  4 + (5+6)))")); //11584.925
+//console.log(eval("-2.2*-( 5 *(10.7 * 3 *(2*33+7*9)+7*9) /  4 + (5+6))")); //11584.92500....
+//console.log(2 * -(5 * (10* 3 (2 * 33 + 7 * 9) + 7 * 9) / 4 + (5 + 6))); 
 
-//console.log(calculator("5+((4*9)*6*3+5-182)+389")); //865
-//console.log(5 + ((4 * 9) * 6 * 3 + 5 - 182) + 389); //865
+console.log(calculator("5+((4*9)*6*3+5-182)+389")); //865
+console.log(5 + ((4 * 9) * 6 * 3 + 5 - 182) + 389); //865
 
-//console.log(calculator("3^6*(9*6+5/(9+2987)+87*(932))")); //59149603.2166...
-//console.log(Math.pow(3,6)*(9*6+5/(9+2987)+87*(932))); //59149603.2166...
+// console.log(calculator("3^6*(9*6+5/(9+2987)+87*(932))")); //59149603.2166...
+// console.log(Math.pow(3,6)*(9*6+5/(9+2987)+87*(932))); //59149603.2166...
 
-console.log(calculator("420+(28*(3472/4*(7+4))-720-4-20*43/(7*29+3))+207"));
-console.log(420+(28*(3472/4*(7+4))-720-4-20*43/(7*29+3))+207);
-
-jdflsaj;sadhfasldhfa;
+// console.log(calculator("420+(28*(3472/4*(7+4))-720-4-20*43/(7*29+3))+207"));
+// console.log(420+(28*(3472/4*(7+4))-720-4-20*43/(7*29+3))+207);
